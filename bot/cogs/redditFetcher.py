@@ -98,16 +98,18 @@ class Memes(commands.Cog):
                 icon_url=memeList[sendable_meme]["icon_url"],
             )
             embed.add_field(
-                name="Votes 🔥", value=memeList[sendable_meme]["score"], inline=True
+                name="Votes 🔥",
+                value=f'`{memeList[sendable_meme]["score"]}`',
+                inline=True,
             )
             embed.add_field(
                 name="Comments 💬",
-                value=memeList[sendable_meme]["comments"],
+                value=f'`{memeList[sendable_meme]["comments"]}`',
                 inline=True,
             )
             embed.add_field(
                 name="Upvote ratio ⚖️",
-                value=memeList[sendable_meme]["upvote_ratio"],
+                value=f"`{(memeList[sendable_meme]['upvote_ratio'] * 100)}%`",
                 inline=True,
             )
             embed.set_footer(
@@ -130,16 +132,18 @@ class Memes(commands.Cog):
                 icon_url=memeList[sendable_meme]["icon_url"],
             )
             embed.add_field(
-                name="Votes 🔥", value=memeList[sendable_meme]["score"], inline=True
+                name="Votes 🔥",
+                value=f'`{memeList[sendable_meme]["score"]}`',
+                inline=True,
             )
             embed.add_field(
                 name="Comments 💬",
-                value=memeList[sendable_meme]["comments"],
+                value=f'`{memeList[sendable_meme]["comments"]}`',
                 inline=True,
             )
             embed.add_field(
                 name="Upvote ratio ⚖️",
-                value=memeList[sendable_meme]["upvote_ratio"],
+                value=f"`{(memeList[sendable_meme]['upvote_ratio'] * 100)}%`",
                 inline=True,
             )
             embed.set_footer(
