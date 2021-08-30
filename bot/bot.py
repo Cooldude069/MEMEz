@@ -48,9 +48,11 @@ async def _prefix(ctx, _p: str = None):
     prefixes = collection.find_one({"_id": 0})
     if prefixes is None:
         collection.insert_one({"_id": 0, str(ctx.guild.id): _p})
+        await ctx.send(f"Prefix successfully changed to {_p}")
         return True
     else:
         collection.update_one({"_id": 0}, {"$set": {str(ctx.guild.id): _p}})
+        await ctx.send(f"Prefix successfully changed to {_p}")
         return True
 
 
