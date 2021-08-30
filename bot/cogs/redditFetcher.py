@@ -4,6 +4,7 @@ import pymongo
 from pymongo import MongoClient
 from os import environ
 import asyncpraw
+import datetime
 import random
 
 
@@ -49,6 +50,8 @@ class Memes(commands.Cog):
                 memeList[meme.title][
                     "author_url"
                 ] = f"https://reddit.com/user/{author.name}"
+                await meme.subreddit.load()
+                memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
                 memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
 
         db = self.cluster["main"]
@@ -79,6 +82,8 @@ class Memes(commands.Cog):
                     memeList[meme.title][
                         "author_url"
                     ] = f"https://reddit.com/user/{author.name}"
+                    await meme.subreddit.load()
+                    memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
                     memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
 
             sendable_meme = random.choice(memeList)
@@ -105,6 +110,11 @@ class Memes(commands.Cog):
                 value=memeList[sendable_meme]["upvote_ratio"],
                 inline=True,
             )
+            embed.set_footer(
+                text=f"From r/{memeList[sendable_meme]['sub']}",
+                icon_url=memeList[sendable_meme["sub_url"]],
+            )
+            embed.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=embed)
         else:
             memeList = loggedMemes
@@ -132,6 +142,11 @@ class Memes(commands.Cog):
                 value=memeList[sendable_meme]["upvote_ratio"],
                 inline=True,
             )
+            embed.set_footer(
+                text=f"From r/{memeList[sendable_meme]['sub']}",
+                icon_url=memeList[sendable_meme["sub_url"]],
+            )
+            embed.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=embed)
 
 
