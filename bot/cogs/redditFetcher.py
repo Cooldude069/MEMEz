@@ -106,13 +106,13 @@ class Memes(commands.Cog):
                 inline=True,
             )
             embed.add_field(
-                name="Upvote ration ⚖️",
+                name="Upvote ratio ⚖️",
                 value=memeList[sendable_meme]["upvote_ratio"],
                 inline=True,
             )
             embed.set_footer(
                 text=f"From r/{memeList[sendable_meme]['sub']}",
-                icon_url=memeList[sendable_meme["sub_url"]],
+                icon_url=memeList[sendable_meme]["sub_url"],
             )
             embed.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=embed)
@@ -138,13 +138,13 @@ class Memes(commands.Cog):
                 inline=True,
             )
             embed.add_field(
-                name="Upvote ration ⚖️",
+                name="Upvote ratio ⚖️",
                 value=memeList[sendable_meme]["upvote_ratio"],
                 inline=True,
             )
             embed.set_footer(
                 text=f"From r/{memeList[sendable_meme]['sub']}",
-                icon_url=memeList[sendable_meme["sub_url"]],
+                icon_url=memeList[sendable_meme]["sub_url"],
             )
             embed.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=embed)
