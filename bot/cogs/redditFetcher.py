@@ -61,6 +61,7 @@ class Memes(commands.Cog):
                 await meme.subreddit.load()
                 memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
                 memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
+                memeList[meme.title]["ts"] = meme.created_utc
 
         db = self.cluster["main"]  # establishing a connection to the database.
         collection = db["memes"]
@@ -103,6 +104,7 @@ class Memes(commands.Cog):
                     await meme.subreddit.load()
                     memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
                     memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
+                    memeList[meme.title]["ts"] = meme.created_utc
 
             sendable_meme = random.choice(memeList)  # Picking a random meme.
             # creating the meme embed.
@@ -135,7 +137,9 @@ class Memes(commands.Cog):
                 text=f"From r/{memeList[sendable_meme]['sub']}",
                 icon_url=memeList[sendable_meme]["sub_icon"],
             )
-            embed.timestamp = datetime.datetime.utcnow()
+            embed.timestamp = datetime.datetime.utcfromtimestamp(
+                int(memeList[sendable_meme]["ts"])
+            )
             await ctx.send(embed=embed)
         else:
             # if the memes have been logged.
@@ -172,7 +176,9 @@ class Memes(commands.Cog):
                 text=f"From r/{memeList[sendable_meme]['sub']}",
                 icon_url=memeList[sendable_meme]["sub_icon"],
             )
-            embed.timestamp = datetime.datetime.utcnow()
+            embed.timestamp = datetime.datetime.utcfromtimestamp(
+                int(memeList[sendable_meme]["ts"])
+            )
             await ctx.send(embed=embed)
 
 
