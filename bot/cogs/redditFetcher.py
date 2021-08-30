@@ -83,7 +83,8 @@ class Memes(commands.Cog):
 
             sendable_meme = random.choice(memeList)
             embed = discord.Embed(
-                description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})"
+                description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})",
+                colour=discord.Color.from_rgb(255, 93, 68),
             )
             embed.set_image(url=memeList[sendable_meme]["url"])
             embed.set_author(
@@ -109,7 +110,8 @@ class Memes(commands.Cog):
             memeList = loggedMemes
             sendable_meme = random.choice(list(memeList))
             embed = discord.Embed(
-                description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})"
+                description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})",
+                colour=discord.Color.from_rgb(255, 93, 68),
             )
             embed.set_image(url=memeList[sendable_meme]["url"])
             embed.set_author(
