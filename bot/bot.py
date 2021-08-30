@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 import pymongo
 from pymongo import MongoClient
+from run import start
 
 
 load_dotenv()  # Loading the environment variables from the .env file.
@@ -70,4 +71,5 @@ for cog in cogs:
     # Loading all cogs.
     client.load_extension(cog)
 
+start()
 client.run(os.environ.get("bot_token"))  # Running the bot.
