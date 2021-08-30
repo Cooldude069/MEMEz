@@ -44,6 +44,7 @@ class Memes(commands.Cog):
                 memeList[meme.title]["sub"] = subreddit
                 memeList[meme.title]["author"] = meme.author.name
                 author = await self.reddit.redditor(meme.author.name)
+                await author.load()
                 memeList[meme.title]["icon_url"] = author.icon_img
                 memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
 
@@ -70,6 +71,7 @@ class Memes(commands.Cog):
                     memeList[meme.title]["sub"] = subreddit
                     memeList[meme.title]["author"] = meme.author.name
                     author = await self.reddit.redditor(meme.author.name)
+                    await author.load()
                     memeList[meme.title]["icon_url"] = author.icon_img
                     memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
 
