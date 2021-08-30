@@ -9,8 +9,8 @@ class MemeEditor(commands.Cog):
         self.client = client
         self.dirPath = "bot/Assets/meme-templates/"
 
-    @commands.command(name="test")
-    async def _test(self, ctx, *, text: str):
+    @commands.command(name="drake")
+    async def _drake(self, ctx, *, text: str):
         t1, t2 = text.split(",")
         if t2.startswith(" "):
             t2 = t2[1:]

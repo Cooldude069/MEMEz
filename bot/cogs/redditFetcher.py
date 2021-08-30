@@ -27,7 +27,7 @@ class Memes(commands.Cog):
         )
         self.updateMeme.start()
 
-    @tasks.loop(minutes=30)
+    @tasks.loop(minutes=180)
     async def updateMeme(self):
         await self.client.wait_until_ready()
         print("Attempting to log memes")
@@ -41,6 +41,8 @@ class Memes(commands.Cog):
                 memeList[meme.title]["score"] = meme.score
                 memeList[meme.title]["url"] = meme.url
                 memeList[meme.title]["comments"] = len(await meme.comments())
+                memeList[meme.title]["sub"] = subreddit
+                memeList[meme.title]["author"] = meme.author.name
 
         db = self.cluster["main"]
         collection = db["memes"]
@@ -62,10 +64,12 @@ class Memes(commands.Cog):
                     memeList[meme.title]["score"] = meme.score
                     memeList[meme.title]["url"] = meme.url
                     memeList[meme.title]["comments"] = len(await meme.comments())
+                    memeList[meme.title]["sub"] = subreddit
+                    memeList[meme.title]["author"] = meme.author.name
 
             sendable_meme = random.choice(memeList)
             embed = discord.Embed(
-                description=f"***__[{memeList[sendable_meme].title}]({memeList[sendable_meme].url})__***",
+                description=f"**[{memeList[sendable_meme]['title']}]({memeList[sendable_meme].url})** \nby u/{memeList[sendable_meme]['author']} on r/{memeList[sendable_meme]['sub']}",
                 color=discord.Color.from_rgb(
                     random.randint(0, 255),
                     random.randint(0, 255),
@@ -79,7 +83,7 @@ class Memes(commands.Cog):
             memeList = loggedMemes
             sendable_meme = random.choice(list(memeList))
             embed = discord.Embed(
-                description=f"***__[{sendable_meme}]({memeList[sendable_meme]['url']})__***",
+                description=f"**[{sendable_meme}]({memeList[sendable_meme]['url']})** \nby u/{memeList[sendable_meme]['author']} on r/{memeList[sendable_meme]['sub']}",
                 color=discord.Color.from_rgb(
                     random.randint(0, 255),
                     random.randint(0, 255),
