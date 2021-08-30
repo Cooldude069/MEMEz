@@ -109,7 +109,7 @@ class Memes(commands.Cog):
             )
             embed.add_field(
                 name="Upvote ratio ⚖️",
-                value=f"`{(memeList[sendable_meme]['upvote_ratio'] * 100)}%`",
+                value=f"`{int(memeList[sendable_meme]['upvote_ratio'] * 100)}%`",
                 inline=True,
             )
             embed.set_footer(
@@ -143,7 +143,7 @@ class Memes(commands.Cog):
             )
             embed.add_field(
                 name="Upvote ratio ⚖️",
-                value=f"`{(memeList[sendable_meme]['upvote_ratio'] * 100)}%`",
+                value=f"`{int(memeList[sendable_meme]['upvote_ratio'] * 100)}%`",
                 inline=True,
             )
             embed.set_footer(
