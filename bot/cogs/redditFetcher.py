@@ -77,35 +77,34 @@ class Memes(commands.Cog):
 
             sendable_meme = random.choice(memeList)
             embed = discord.Embed(
-                description=f"**[{memeList[sendable_meme]['title']}]({memeList[sendable_meme].url})** \nby u/{memeList[sendable_meme]['author']} on r/{memeList[sendable_meme]['sub']}",
-                color=discord.Color.from_rgb(
-                    random.randint(0, 255),
-                    random.randint(0, 255),
-                    random.randint(0, 255),
-                ),
+                description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})"
             )
-            embed.set_image(url=memeList[sendable_meme].url)
-            embed.set_footer(text=f"🔥 {memeList[sendable_meme].score}")
+            embed.set_image(url=memeList[sendable_meme]["url"])
+            embed.set_author(
+                name=f'u/{memeList[sendable_meme]["author"]}',
+                icon_url=memeList[sendable_meme]["icon_url"],
+            )
+            embed.add_field(
+                name="Votes 🔥", value=memeList[sendable_meme]["score"], inline=True
+            )
+            embed.add_field(
+                name="Comments 💬",
+                value=memeList[sendable_meme]["comments"],
+                inline=True,
+            )
+            embed.add_field(
+                name="Upvote ration ⚖️",
+                value=memeList[sendable_meme]["upvote_ratio"],
+                inline=True,
+            )
             await ctx.send(embed=embed)
         else:
             memeList = loggedMemes
             sendable_meme = random.choice(list(memeList))
-            # embed = discord.Embed(
-            #     description=f"**[{sendable_meme}]({memeList[sendable_meme]['url']})** \nby u/{memeList[sendable_meme]['author']} on r/{memeList[sendable_meme]['sub']}",
-            #     color=discord.Color.from_rgb(
-            #         random.randint(0, 255),
-            #         random.randint(0, 255),
-            #         random.randint(0, 255),
-            #     ),
-            # )
-            # embed.set_image(url=memeList[sendable_meme]["url"])
-            # embed.set_footer(
-            #     text=f"🔥 {memeList[sendable_meme]['score']} | 💬 {memeList[sendable_meme]['comments']}"
-            # )
             embed = discord.Embed(
-                description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})",
-                image=memeList[sendable_meme]["url"],
+                description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})"
             )
+            embed.set_image(url=memeList[sendable_meme]["url"])
             embed.set_author(
                 name=f'u/{memeList[sendable_meme]["author"]}',
                 icon_url=memeList[sendable_meme]["icon_url"],
