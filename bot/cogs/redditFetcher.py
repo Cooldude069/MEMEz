@@ -46,6 +46,9 @@ class Memes(commands.Cog):
                 author = await self.reddit.redditor(meme.author.name)
                 await author.load()
                 memeList[meme.title]["icon_url"] = author.icon_img
+                memeList[meme.title][
+                    "author_url"
+                ] = f"https://reddit.com/user/{author.name}"
                 memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
 
         db = self.cluster["main"]
@@ -73,6 +76,9 @@ class Memes(commands.Cog):
                     author = await self.reddit.redditor(meme.author.name)
                     await author.load()
                     memeList[meme.title]["icon_url"] = author.icon_img
+                    memeList[meme.title][
+                        "author_url"
+                    ] = f"https://reddit.com/user/{author.name}"
                     memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
 
             sendable_meme = random.choice(memeList)
@@ -82,6 +88,7 @@ class Memes(commands.Cog):
             embed.set_image(url=memeList[sendable_meme]["url"])
             embed.set_author(
                 name=f'u/{memeList[sendable_meme]["author"]}',
+                url=memeList[sendable_meme]["author_url"],
                 icon_url=memeList[sendable_meme]["icon_url"],
             )
             embed.add_field(
@@ -107,6 +114,7 @@ class Memes(commands.Cog):
             embed.set_image(url=memeList[sendable_meme]["url"])
             embed.set_author(
                 name=f'u/{memeList[sendable_meme]["author"]}',
+                url=memeList[sendable_meme]["author_url"],
                 icon_url=memeList[sendable_meme]["icon_url"],
             )
             embed.add_field(
