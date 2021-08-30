@@ -112,7 +112,7 @@ class Memes(commands.Cog):
             )
             embed.set_footer(
                 text=f"From r/{memeList[sendable_meme]['sub']}",
-                icon_url=memeList[sendable_meme]["sub_url"],
+                icon_url=memeList[sendable_meme]["sub_icon"],
             )
             embed.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=embed)
@@ -144,7 +144,7 @@ class Memes(commands.Cog):
             )
             embed.set_footer(
                 text=f"From r/{memeList[sendable_meme]['sub']}",
-                icon_url=memeList[sendable_meme]["sub_url"],
+                icon_url=memeList[sendable_meme]["sub_icon"],
             )
             embed.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=embed)
