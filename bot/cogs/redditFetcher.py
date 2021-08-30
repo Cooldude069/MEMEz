@@ -107,7 +107,7 @@ class Memes(commands.Cog):
                 image=memeList[sendable_meme]["url"],
             )
             embed.set_author(
-                f'u/{memeList[sendable_meme]["author"]}',
+                name=f'u/{memeList[sendable_meme]["author"]}',
                 icon_url=memeList[sendable_meme]["icon_url"],
             )
             embed.add_field(
