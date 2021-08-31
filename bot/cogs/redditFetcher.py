@@ -50,6 +50,9 @@ class Memes(commands.Cog):
                     memeList[meme.title] = {}
                     memeList[meme.title]["score"] = meme.score
                     memeList[meme.title]["url"] = meme.url
+                    memeList[meme.title][
+                        "link"
+                    ] = f"https://reddit.com/{meme.permalink}"
                     memeList[meme.title]["comments"] = len(await meme.comments())
                     memeList[meme.title]["sub"] = subreddit
                     memeList[meme.title]["author"] = meme.author.name
@@ -95,6 +98,9 @@ class Memes(commands.Cog):
                         memeList[meme.title] = {}
                         memeList[meme.title]["score"] = meme.score
                         memeList[meme.title]["url"] = meme.url
+                        memeList[meme.title][
+                            "link"
+                        ] = f"https://reddit.com/{meme.permalink}"
                         memeList[meme.title]["comments"] = len(await meme.comments())
                         memeList[meme.title]["sub"] = subreddit
                         memeList[meme.title]["author"] = meme.author.name
@@ -117,7 +123,7 @@ class Memes(commands.Cog):
 
             # creating the meme embed.
             embed = discord.Embed(
-                description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})",
+                description=f"[{sendable_meme}]({memeList[sendable_meme]['link']})",
                 colour=discord.Color.from_rgb(255, 93, 68),
             )
             embed.set_image(url=memeList[sendable_meme]["url"])
@@ -159,7 +165,7 @@ class Memes(commands.Cog):
                     sendable_meme = random.choice(list(memeList))
 
             embed = discord.Embed(
-                description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})",
+                description=f"[{sendable_meme}]({memeList[sendable_meme]['link']})",
                 colour=discord.Color.from_rgb(255, 93, 68),
             )
             embed.set_image(url=memeList[sendable_meme]["url"])
