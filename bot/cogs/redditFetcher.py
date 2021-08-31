@@ -46,22 +46,23 @@ class Memes(commands.Cog):
             top = sub.top("day", limit=20)  # fetching the top 20 memes of the day.
             async for meme in top:
                 # Adding the memes to the list.
-                memeList[meme.title] = {}
-                memeList[meme.title]["score"] = meme.score
-                memeList[meme.title]["url"] = meme.url
-                memeList[meme.title]["comments"] = len(await meme.comments())
-                memeList[meme.title]["sub"] = subreddit
-                memeList[meme.title]["author"] = meme.author.name
-                author = await self.reddit.redditor(meme.author.name)
-                await author.load()
-                memeList[meme.title]["icon_url"] = author.icon_img
-                memeList[meme.title][
-                    "author_url"
-                ] = f"https://reddit.com/user/{author.name}"
-                await meme.subreddit.load()
-                memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
-                memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
-                memeList[meme.title]["ts"] = meme.created_utc
+                if not meme.url.startswith("https://v.redd.it/"):
+                    memeList[meme.title] = {}
+                    memeList[meme.title]["score"] = meme.score
+                    memeList[meme.title]["url"] = meme.url
+                    memeList[meme.title]["comments"] = len(await meme.comments())
+                    memeList[meme.title]["sub"] = subreddit
+                    memeList[meme.title]["author"] = meme.author.name
+                    author = await self.reddit.redditor(meme.author.name)
+                    await author.load()
+                    memeList[meme.title]["icon_url"] = author.icon_img
+                    memeList[meme.title][
+                        "author_url"
+                    ] = f"https://reddit.com/user/{author.name}"
+                    await meme.subreddit.load()
+                    memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
+                    memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
+                    memeList[meme.title]["ts"] = meme.created_utc
 
         db = self.cluster["main"]  # establishing a connection to the database.
         collection = db["memes"]
@@ -89,22 +90,23 @@ class Memes(commands.Cog):
                 memes = await self.reddit.subreddit(subreddit)
                 hot = memes.top("day", limit=20)
                 async for meme in hot:
-                    memeList[meme.title] = {}
-                    memeList[meme.title]["score"] = meme.score
-                    memeList[meme.title]["url"] = meme.url
-                    memeList[meme.title]["comments"] = len(await meme.comments())
-                    memeList[meme.title]["sub"] = subreddit
-                    memeList[meme.title]["author"] = meme.author.name
-                    author = await self.reddit.redditor(meme.author.name)
-                    await author.load()
-                    memeList[meme.title]["icon_url"] = author.icon_img
-                    memeList[meme.title][
-                        "author_url"
-                    ] = f"https://reddit.com/user/{author.name}"
-                    await meme.subreddit.load()
-                    memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
-                    memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
-                    memeList[meme.title]["ts"] = meme.created_utc
+                    if not meme.url.startswith("https://v.redd.it/"):
+                        memeList[meme.title] = {}
+                        memeList[meme.title]["score"] = meme.score
+                        memeList[meme.title]["url"] = meme.url
+                        memeList[meme.title]["comments"] = len(await meme.comments())
+                        memeList[meme.title]["sub"] = subreddit
+                        memeList[meme.title]["author"] = meme.author.name
+                        author = await self.reddit.redditor(meme.author.name)
+                        await author.load()
+                        memeList[meme.title]["icon_url"] = author.icon_img
+                        memeList[meme.title][
+                            "author_url"
+                        ] = f"https://reddit.com/user/{author.name}"
+                        await meme.subreddit.load()
+                        memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
+                        memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
+                        memeList[meme.title]["ts"] = meme.created_utc
 
             sendable_meme = random.choice(memeList)  # Picking a random meme.
             # creating the meme embed.
