@@ -110,8 +110,8 @@ class Memes(commands.Cog):
                         memeList[meme.title]["ts"] = meme.created_utc
                         memeList[meme.title]["nsfw"] = meme.over_18
             channel_is_nsfw = ctx.channel.is_nsfw()
+            sendable_meme = random.choice(memeList)  # Picking a random meme.
             if not channel_is_nsfw:
-                sendable_meme = random.choice(memeList)  # Picking a random meme.
                 while memeList[sendable_meme]["nsfw"]:
                     sendable_meme = random.choice(memeList)
 
@@ -153,10 +153,11 @@ class Memes(commands.Cog):
             # if the memes have been logged.
             memeList = loggedMemes
             channel_is_nsfw = ctx.channel.is_nsfw()
+            sendable_meme = random.choice(memeList)  # Picking a random meme.
             if not channel_is_nsfw:
-                sendable_meme = random.choice(memeList)  # Picking a random meme.
                 while memeList[sendable_meme]["nsfw"]:
                     sendable_meme = random.choice(memeList)
+
             embed = discord.Embed(
                 description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})",
                 colour=discord.Color.from_rgb(255, 93, 68),
