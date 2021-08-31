@@ -153,10 +153,10 @@ class Memes(commands.Cog):
             # if the memes have been logged.
             memeList = loggedMemes
             channel_is_nsfw = ctx.channel.is_nsfw()
-            sendable_meme = random.choice(memeList)  # Picking a random meme.
+            sendable_meme = random.choice(memeList.keys())  # Picking a random meme.
             if not channel_is_nsfw:
                 while memeList[sendable_meme]["nsfw"]:
-                    sendable_meme = random.choice(memeList)
+                    sendable_meme = random.choice(memeList.keys())
 
             embed = discord.Embed(
                 description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})",
