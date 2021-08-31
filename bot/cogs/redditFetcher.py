@@ -63,6 +63,7 @@ class Memes(commands.Cog):
                     memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
                     memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
                     memeList[meme.title]["ts"] = meme.created_utc
+                    memeList[meme.title]["nsfw"] = meme.over_18
 
         db = self.cluster["main"]  # establishing a connection to the database.
         collection = db["memes"]
@@ -107,8 +108,13 @@ class Memes(commands.Cog):
                         memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
                         memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
                         memeList[meme.title]["ts"] = meme.created_utc
+                        memeList[meme.title]["nsfw"] = meme.over_18
+            channel_is_nsfw = ctx.channel.is_nsfw()
+            if not channel_is_nsfw:
+                sendable_meme = random.choice(memeList)  # Picking a random meme.
+                while memeList[sendable_meme]["nsfw"]:
+                    sendable_meme = random.choice(memeList)
 
-            sendable_meme = random.choice(memeList)  # Picking a random meme.
             # creating the meme embed.
             embed = discord.Embed(
                 description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})",
@@ -146,9 +152,11 @@ class Memes(commands.Cog):
         else:
             # if the memes have been logged.
             memeList = loggedMemes
-            sendable_meme = random.choice(
-                list(memeList)
-            )  # The random meme which will be sent.
+            channel_is_nsfw = ctx.channel.is_nsfw()
+            if not channel_is_nsfw:
+                sendable_meme = random.choice(memeList)  # Picking a random meme.
+                while memeList[sendable_meme]["nsfw"]:
+                    sendable_meme = random.choice(memeList)
             embed = discord.Embed(
                 description=f"[{sendable_meme}]({memeList[sendable_meme]['url']})",
                 colour=discord.Color.from_rgb(255, 93, 68),
