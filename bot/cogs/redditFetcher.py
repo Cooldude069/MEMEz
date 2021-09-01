@@ -36,15 +36,24 @@ class Memes(commands.Cog):
         collection = db["memes-viewed"]
         memeCollection = db["memes"]
         _memes = memeCollection.find_one({"_id": 2})
+        _memes = _memes["memes"]
         totalMemes = len(list(_memes))
         memesViewed: dict = collection.find_one({"_id": 0})
+        memesViewed = memesViewed["viewed"]
         index = 0
         if str(serverID) in list(memesViewed):
             index = memesViewed[str(serverID)]
 
         _index = index + 1 if index + 1 < totalMemes else 0
-        collection.update_one({"_id": 0}, {"$set": {str(serverID): _index}})
+        memesViewed[str(serverID)] = _index
+        collection.update_one({"_id": 0}, {"$set": {"viewed": memesViewed}})
         return index
+
+    def resetMemeIndices(self) -> None:
+        db = self.cluster["main"]
+        collection = db["memes-viewed"]
+        memesViewed: dict = collection.find_one({"_id": 0})
+        collection.update_one({"_id": 0}, {"$set": {"viewed": {}}})
 
     @tasks.loop(minutes=180)
     async def updateMeme(self):
