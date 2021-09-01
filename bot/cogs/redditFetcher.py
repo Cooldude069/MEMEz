@@ -98,6 +98,9 @@ class Memes(commands.Cog):
             {"_id": 2}, {"$set": {"memes": memeList}}
         )  # Updating the memes.
         print("Logged Memes")
+        print("Refreshing viewed memes")
+        self.resetMemeIndices()
+        print("Refreshed viewed memes")
 
     @commands.command()
     async def meme(self, ctx):
