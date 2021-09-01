@@ -65,6 +65,7 @@ class Memes(commands.Cog):
                 if not meme.url.startswith("https://v.redd.it/"):
                     memeList[meme.title] = {}
                     memeList[meme.title]["score"] = meme.score
+                    memeList[meme.title]["title"] = meme.title
                     memeList[meme.title]["url"] = meme.url
                     memeList[meme.title]["link"] = f"https://reddit.com{meme.permalink}"
                     memeList[meme.title]["comments"] = len(await meme.comments())
@@ -117,7 +118,7 @@ class Memes(commands.Cog):
                     sendable_meme = memeList[_key]
 
             embed = discord.Embed(
-                description=f"[{sendable_meme}]({sendable_meme['link']})",
+                description=f"[{sendable_meme['title']}]({sendable_meme['link']})",
                 colour=discord.Color.from_rgb(255, 93, 68),
             )
             embed.set_image(url=sendable_meme["url"])
