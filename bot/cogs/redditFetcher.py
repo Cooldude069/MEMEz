@@ -35,7 +35,7 @@ class Memes(commands.Cog):
         db = self.cluster["main"]
         collection = db["memes-viewed"]
         memeCollection = db["memes"]
-        _memes = memeCollection.find_one({"_id": 0})
+        _memes = memeCollection.find_one({"_id": 2})
         totalMemes = len(list(_memes))
         memesViewed: dict = collection.find_one({"_id": 0})
         index = 0
