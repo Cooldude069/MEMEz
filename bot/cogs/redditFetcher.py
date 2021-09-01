@@ -1,3 +1,4 @@
+import collections
 import discord
 from discord.ext import commands, tasks
 import pymongo
@@ -29,6 +30,21 @@ class Memes(commands.Cog):
             user_agent=environ.get("r_ua"),
         )
         self.updateMeme.start()  # Starting the task to update memes.
+
+    def nextMemeIndex(self, serverID: int) -> int:
+        db = self.cluster["main"]
+        collection = db["memes-viewed"]
+        memeCollection = db["memes"]
+        _memes = memeCollection.find_one({"_id": 0})
+        totalMemes = len(list(_memes))
+        memesViewed: dict = collection.find_one({"_id": 0})
+        index = 0
+        if str(serverID) in list(memesViewed):
+            index = memesViewed[str(serverID)]
+
+        _index = index + 1 if index + 1 < totalMemes else 0
+        collection.update_one({"_id": 0}, {"$set": {str(serverID): _index}})
+        return index
 
     @tasks.loop(minutes=180)
     async def updateMeme(self):
@@ -85,114 +101,52 @@ class Memes(commands.Cog):
             "memes"
         ]  # Fetching the memes list.
         if not loggedMemes:  # meaning no memes have been logged.
-            memeList = {}
-            # Fetching fresh memes.
-            # Similar process.
-            for subreddit in self.subreddits:
-                memes = await self.reddit.subreddit(subreddit)
-                hot = memes.top("day", limit=20)
-                async for meme in hot:
-                    if not meme.url.startswith("https://v.redd.it/"):
-                        memeList[meme.title] = {}
-                        memeList[meme.title]["score"] = meme.score
-                        memeList[meme.title]["url"] = meme.url
-                        memeList[meme.title][
-                            "link"
-                        ] = f"https://reddit.com{meme.permalink}"
-                        memeList[meme.title]["comments"] = len(await meme.comments())
-                        memeList[meme.title]["sub"] = subreddit
-                        memeList[meme.title]["author"] = meme.author.name
-                        author = await self.reddit.redditor(meme.author.name)
-                        await author.load()
-                        memeList[meme.title]["icon_url"] = author.icon_img
-                        memeList[meme.title][
-                            "author_url"
-                        ] = f"https://reddit.com/user/{author.name}"
-                        await meme.subreddit.load()
-                        memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
-                        memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
-                        memeList[meme.title]["ts"] = meme.created_utc
-                        memeList[meme.title]["nsfw"] = meme.over_18
-            channel_is_nsfw = ctx.channel.is_nsfw()
-            sendable_meme = random.choice(list(memeList))  # Picking a random meme.
-            if not channel_is_nsfw:
-                while memeList[sendable_meme]["nsfw"]:
-                    sendable_meme = random.choice(list(memeList))
-
-            # creating the meme embed.
-            embed = discord.Embed(
-                description=f"[{sendable_meme}]({memeList[sendable_meme]['link']})",
-                colour=discord.Color.from_rgb(255, 93, 68),
-            )
-            embed.set_image(url=memeList[sendable_meme]["url"])
-            embed.set_author(
-                name=f'u/{memeList[sendable_meme]["author"]}',
-                url=memeList[sendable_meme]["author_url"],
-                icon_url=memeList[sendable_meme]["icon_url"],
-            )
-            embed.add_field(
-                name="Votes 🔥",
-                value=f'`{memeList[sendable_meme]["score"]}`',
-                inline=True,
-            )
-            embed.add_field(
-                name="Comments 💬",
-                value=f'`{memeList[sendable_meme]["comments"]}`',
-                inline=True,
-            )
-            embed.add_field(
-                name="Upvote ratio ⚖️",
-                value=f"`{int(memeList[sendable_meme]['upvote_ratio'] * 100)}%`",
-                inline=True,
-            )
-            embed.set_footer(
-                text=f"From r/{memeList[sendable_meme]['sub']}",
-                icon_url=memeList[sendable_meme]["sub_icon"],
-            )
-            embed.timestamp = datetime.datetime.utcfromtimestamp(
-                int(memeList[sendable_meme]["ts"])
-            )
-            await ctx.send(embed=embed)
+            pass
         else:
             # if the memes have been logged.
             memeList = loggedMemes
+            memeIndex = self.nextMemeIndex(ctx.guild.id)
             channel_is_nsfw = ctx.channel.is_nsfw()
-            sendable_meme = random.choice(list(memeList))  # Picking a random meme.
+            _keys = list(memeList)
+            _key = _keys[memeIndex]
+            sendable_meme = memeList[_key]  # Picking a random meme.
             if not channel_is_nsfw:
-                while memeList[sendable_meme]["nsfw"]:
-                    sendable_meme = random.choice(list(memeList))
+                while sendable_meme["nsfw"]:
+                    memeIndex = self.nextMemeIndex(ctx.guild.id)
+                    _key = _keys[memeIndex]
+                    sendable_meme = memeList[_key]
 
             embed = discord.Embed(
-                description=f"[{sendable_meme}]({memeList[sendable_meme]['link']})",
+                description=f"[{sendable_meme}]({sendable_meme['link']})",
                 colour=discord.Color.from_rgb(255, 93, 68),
             )
-            embed.set_image(url=memeList[sendable_meme]["url"])
+            embed.set_image(url=sendable_meme["url"])
             embed.set_author(
-                name=f'u/{memeList[sendable_meme]["author"]}',
-                url=memeList[sendable_meme]["author_url"],
-                icon_url=memeList[sendable_meme]["icon_url"],
+                name=f'u/{sendable_meme["author"]}',
+                url=sendable_meme["author_url"],
+                icon_url=sendable_meme["icon_url"],
             )
             embed.add_field(
                 name="Votes 🔥",
-                value=f'`{memeList[sendable_meme]["score"]}`',
+                value=f'`{sendable_meme["score"]}`',
                 inline=True,
             )
             embed.add_field(
                 name="Comments 💬",
-                value=f'`{memeList[sendable_meme]["comments"]}`',
+                value=f'`{sendable_meme["comments"]}`',
                 inline=True,
             )
             embed.add_field(
                 name="Upvote ratio ⚖️",
-                value=f"`{int(memeList[sendable_meme]['upvote_ratio'] * 100)}%`",
+                value=f"`{int(sendable_meme['upvote_ratio'] * 100)}%`",
                 inline=True,
             )
             embed.set_footer(
-                text=f"From r/{memeList[sendable_meme]['sub']}",
-                icon_url=memeList[sendable_meme]["sub_icon"],
+                text=f"From r/{sendable_meme['sub']}",
+                icon_url=sendable_meme["sub_icon"],
             )
             embed.timestamp = datetime.datetime.utcfromtimestamp(
-                int(memeList[sendable_meme]["ts"])
+                int(sendable_meme["ts"])
             )
             await ctx.send(embed=embed)
 
