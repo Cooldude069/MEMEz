@@ -6,12 +6,14 @@ ENABLED = "✓"
 DISABLED = "❌"
 
 
-def arg_parser(args: tuple) -> dict:
+def arg_parser(args: list) -> dict:
     _args = {}
-    for arg in args:
+    print(args)
+    for i in range(len(args)):
+        arg = args[i]
         if arg.startswith("--"):
             try:
-                _args[arg.lstrip("--")] = args[args.index(arg) + 1]
+                _args[arg.lstrip("--")] = args[i + 1]
             except IndexError:
                 print(args)
 
@@ -24,7 +26,8 @@ class Settings(commands.Cog):
 
     @commands.command(name="settings")
     async def edit_settings(self, ctx, *args):
-        argvs = arg_parser(args[0])
+        print(args)
+        argvs = arg_parser(list(args[0]))
         await ctx.send(argvs)
 
 
