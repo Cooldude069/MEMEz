@@ -8,6 +8,7 @@ DISABLED = "❌"
 
 def arg_parser(*args) -> dict:
     _args = {}
+    print(args)
     for arg in args:
         if arg.startswith("--"):
             _args[arg.lstrip("--")] = args[args.index(arg) + 1]
