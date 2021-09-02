@@ -6,11 +6,14 @@ ENABLED = "✓"
 DISABLED = "❌"
 
 
-def arg_parser(*args) -> dict:
+def arg_parser(args: tuple) -> dict:
     _args = {}
     for arg in args:
         if arg.startswith("--"):
-            _args[arg.lstrip("--")] = args[args.index(arg) + 1]
+            try:
+                _args[arg.lstrip("--")] = args[args.index(arg) + 1]
+            except IndexError:
+                print(args)
 
     return _args
 
