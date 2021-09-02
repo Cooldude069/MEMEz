@@ -11,7 +11,7 @@ class Settings(commands.Cog):
         self.client = client
 
     @commands.command(name="settings")
-    async def edit_settings(self, ctx, *kwargs):
+    async def edit_settings(self, ctx, **kwargs):
         print(kwargs)
 
 
