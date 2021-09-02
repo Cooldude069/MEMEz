@@ -1,3 +1,4 @@
+from typing import Union
 import discord
 from discord.ext import commands
 
@@ -6,11 +7,11 @@ ENABLED = "✓"
 DISABLED = "❌"
 
 
-def arg_parser(args: list) -> dict:
+def arg_parser(args: Union[tuple, list]) -> dict:
     _args = {}
     print(args)
     for i in range(len(args)):
-        arg = args[i]
+        arg: str = args[i]
         if arg.startswith("--"):
             try:
                 _args[arg.lstrip("--")] = args[i + 1]
@@ -26,8 +27,7 @@ class Settings(commands.Cog):
 
     @commands.command(name="settings")
     async def edit_settings(self, ctx, *args):
-        print(args)
-        argvs = arg_parser(list(args[0]))
+        argvs = arg_parser(args)
         await ctx.send(argvs)
 
 
