@@ -14,7 +14,7 @@ def arg_parser(args: Union[tuple, list]) -> dict:
         arg: str = args[i]
         if arg.startswith("--"):
             try:
-                _args[arg.lstrip("--")] = args[i + 1]
+                _args[arg.lstrip("--").lower()] = args[i + 1]
             except IndexError:
                 print(args)
 

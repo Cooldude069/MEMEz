@@ -32,7 +32,7 @@ def get_prefix(client, message: discord.Message):
 
 
 client = commands.Bot(command_prefix=get_prefix, case_insensitive=True)
-cogs = ["cogs.redditFetcher", "cogs.memeEditor", "cogs.settings"]  # all the cogs.
+cogs = ["cogs.redditFetcher", "cogs.memeEditor"]  # all the cogs.
 
 
 @client.event

@@ -1,4 +1,3 @@
-import collections
 import discord
 from discord.ext import commands, tasks
 import pymongo
@@ -7,6 +6,21 @@ from os import environ
 import asyncpraw
 import datetime
 import random
+from settings.settingsManager import settingsManager
+import requests
+
+MAXSIZE = 20_000_000
+
+
+def getSize(url: str) -> int:
+    r = requests.head(url)
+    key = "Content-Length"
+    size = 0
+    if key in r.headers:
+        size = r.headers[key]
+        size = int(size) if size.isnumeric() else 0
+
+    return size
 
 
 class Memes(commands.Cog):
@@ -71,26 +85,30 @@ class Memes(commands.Cog):
             top = sub.top("day", limit=20)  # fetching the top 20 memes of the day.
             async for meme in top:
                 # Adding the memes to the list.
-                if not meme.url.startswith("https://v.redd.it/"):
-                    memeList[meme.title] = {}
-                    memeList[meme.title]["score"] = meme.score
-                    memeList[meme.title]["title"] = meme.title
-                    memeList[meme.title]["url"] = meme.url
-                    memeList[meme.title]["link"] = f"https://reddit.com{meme.permalink}"
-                    memeList[meme.title]["comments"] = len(await meme.comments())
-                    memeList[meme.title]["sub"] = subreddit
-                    memeList[meme.title]["author"] = meme.author.name
-                    author = await self.reddit.redditor(meme.author.name)
-                    await author.load()
-                    memeList[meme.title]["icon_url"] = author.icon_img
-                    memeList[meme.title][
-                        "author_url"
-                    ] = f"https://reddit.com/user/{author.name}"
-                    await meme.subreddit.load()
-                    memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
-                    memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
-                    memeList[meme.title]["ts"] = meme.created_utc
-                    memeList[meme.title]["nsfw"] = meme.over_18
+                size = getSize(meme.url)
+                if size < MAXSIZE:
+                    if not meme.url.startswith("https://v.redd.it/"):
+                        memeList[meme.title] = {}
+                        memeList[meme.title]["score"] = meme.score
+                        memeList[meme.title]["title"] = meme.title
+                        memeList[meme.title]["url"] = meme.url
+                        memeList[meme.title][
+                            "link"
+                        ] = f"https://reddit.com{meme.permalink}"
+                        memeList[meme.title]["comments"] = len(await meme.comments())
+                        memeList[meme.title]["sub"] = subreddit
+                        memeList[meme.title]["author"] = meme.author.name
+                        author = await self.reddit.redditor(meme.author.name)
+                        await author.load()
+                        memeList[meme.title]["icon_url"] = author.icon_img
+                        memeList[meme.title][
+                            "author_url"
+                        ] = f"https://reddit.com/user/{author.name}"
+                        await meme.subreddit.load()
+                        memeList[meme.title]["sub_icon"] = meme.subreddit.icon_img
+                        memeList[meme.title]["upvote_ratio"] = meme.upvote_ratio
+                        memeList[meme.title]["ts"] = meme.created_utc
+                        memeList[meme.title]["nsfw"] = meme.over_18
 
         db = self.cluster["main"]  # establishing a connection to the database.
         collection = db["memes"]
@@ -108,6 +126,11 @@ class Memes(commands.Cog):
         This command will return a meme which has been logged to the database. If none have been logged,
         then it will fetch a fresh meme from reddit and send it to the user.
         """
+        settings = settingsManager(ctx.guild.id).getAllSettings()
+        if ctx.channel.id in settings["memeSettings"]["blockedChannels"]:
+            return
+        if ctx.author.id in settings["adminSettings"]["blockedUsers"]:
+            return
         db = self.cluster["main"]  # Connecting to the database
         collection = db["memes"]
         loggedMemes = collection.find_one({"_id": 2})[
@@ -124,10 +147,11 @@ class Memes(commands.Cog):
             _key = _keys[memeIndex]
             sendable_meme = memeList[_key]  # Picking a random meme.
             if not channel_is_nsfw:
-                while sendable_meme["nsfw"]:
-                    memeIndex = self.nextMemeIndex(ctx.guild.id)
-                    _key = _keys[memeIndex]
-                    sendable_meme = memeList[_key]
+                if ctx.channel.id not in settings["memeSettings"]["NSFWMemeChannels"]:
+                    while sendable_meme["nsfw"]:
+                        memeIndex = self.nextMemeIndex(ctx.guild.id)
+                        _key = _keys[memeIndex]
+                        sendable_meme = memeList[_key]
 
             embed = discord.Embed(
                 description=f"[{sendable_meme['title']}]({sendable_meme['link']})",
