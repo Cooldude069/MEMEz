@@ -8,7 +8,6 @@ DISABLED = "❌"
 
 def arg_parser(*args) -> dict:
     _args = {}
-    print(args)
     for arg in args:
         if arg.startswith("--"):
             _args[arg.lstrip("--")] = args[args.index(arg) + 1]
@@ -22,7 +21,7 @@ class Settings(commands.Cog):
 
     @commands.command(name="settings")
     async def edit_settings(self, ctx, *args):
-        argvs = arg_parser(args)
+        argvs = arg_parser(args[0])
         await ctx.send(argvs)
 
 
